@@ -1,9 +1,43 @@
 version: "3.8"
 
 services:
-  postgresql:
-    image: postgres:latest
-    container_name: 'bap-connect'
+  bap-connect-api-server:
+    image: nginx:latest
+    container_name: 'bap-connect-api-server'
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8080:80"
+    volumes:
+      - ./services/bap-connect-api:/var/www/html
+      - ./services/bap-connect-api/infra/nginx/app.conf:/etc/nginx/conf.d/default.conf:ro
+    working_dir: /var/www/html
+
+  bap-connect-api:
+    build:
+      context: ./services/bap-connect-api
+      dockerfile: Dockerfile
+    container_name: 'bap-connect-api'
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./services/bap-connect-api:/var/www/html
+      - ./services/bap-connect-api/infra/php/local.ini:/usr/local/etc/php/conf.d/php.ini
+
+  bap-connect-migrate-db:
+    build:
+      context: ./services/bap-connect-db
+      dockerfile: Dockerfile
+    container_name: 'bap-connect-migrate-db'
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./services/bap-connect-db:/var/www/html
+
+  bap-connect-api-db:
+    image: postgres:16.3
+    container_name: 'bap-connect-api-db'
+    restart: unless-stopped
     environment:
       POSTGRES_DB: bap-connect
       POSTGRES_PASSWORD: root
