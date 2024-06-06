@@ -110,14 +110,15 @@ class OpenSSLTest extends TestCase
     }
 
     /**
-     * Validate base 64
+     * Validate base 64.
      *
-     * @param string $string base64
+     * @param  string  $string  base64
      * @return bool bool True if the string is base64, False otherwise.
      */
     private function isBase64(string $string): bool
     {
         $decoded = base64_decode($string, true);
+
         return $decoded && base64_encode($decoded) === $string;
     }
 }
