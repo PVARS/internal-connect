@@ -15,18 +15,12 @@ class Util
         string $payload,
         string $encryptMethod = 'AES-256-CBC'
     ): ?string {
-        if (!env('ENCRYPT_SECRET_KEY') || !env('SECRET_IV')) {
-            return null;
-        }
         $key = hash('sha256', env('ENCRYPT_SECRET_KEY'));
         $iv = substr(hash('sha256', env('SECRET_IV')), 0, 16);
 
-        $dataEncrypt = openssl_encrypt($payload, $encryptMethod, $key, 0, $iv);
-        if (!$dataEncrypt) {
-            return null;
-        }
+        $dataEncrypt = base64_encode(openssl_encrypt($payload, $encryptMethod, $key, 0, $iv));
 
-        return base64_encode($dataEncrypt);
+        return !$dataEncrypt ? null : $dataEncrypt;
     }
 
     /**
@@ -40,9 +34,6 @@ class Util
         string $payload,
         string $encryptMethod = 'AES-256-CBC'
     ): ?string {
-        if (!env('ENCRYPT_SECRET_KEY') || !env('SECRET_IV')) {
-            return null;
-        }
         $key = hash('sha256', env('ENCRYPT_SECRET_KEY'));
         $iv = substr(hash('sha256', env('SECRET_IV')), 0, 16);
         $dataEncrypt = openssl_decrypt(base64_decode($payload, true), $encryptMethod, $key, 0, $iv);
