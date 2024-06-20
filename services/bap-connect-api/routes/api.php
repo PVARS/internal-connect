@@ -31,7 +31,7 @@ Route::namespace('V1')->group(function () {
                 Route::middleware('VerifiedAndEnabled')->group(function () {
                     Route::delete('/me', [UserController::class, 'delete']);
                     Route::put('/me', [UserController::class, 'update']);
-                    Route::put('/avatar', [UserController::class, 'updateAvatar']);
+                    Route::post('/avatar', [UserController::class, 'updateAvatar']);
                 });
             });
         });
