@@ -120,7 +120,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'gender' => Gender::MALE->value
+            'gender' => Gender::MALE->value,
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
@@ -161,7 +161,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'first_name' => 'Dav'
+            'first_name' => 'Dav',
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
@@ -202,7 +202,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'last_name' => 'Mess'
+            'last_name' => 'Mess',
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
@@ -251,7 +251,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'birthday_from' => Carbon::now()
+            'birthday_from' => Carbon::now(),
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
@@ -326,7 +326,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'birthday_to' => Carbon::now()
+            'birthday_to' => Carbon::now(),
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
@@ -393,7 +393,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'username' => 'test1'
+            'username' => 'test1',
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
@@ -434,7 +434,7 @@ class UserRepositoryTest extends TestCase
             User::factory()->create($item);
         }
         $actual = $this->userRepository->findUsers([
-            'email' => 'test+2@gmail.com'
+            'email' => 'test+2@gmail.com',
         ])->get()->toArray();
 
         $this->assertCount(1, $actual);
