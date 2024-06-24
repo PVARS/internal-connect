@@ -66,7 +66,8 @@ class Util
             return null;
         }
 
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        if (!filter_var($url, FILTER_VALIDATE_URL) ||
+            !preg_match(Constants::REGEX_VALID_TLD, parse_url($url, PHP_URL_HOST))) {
             return null;
         }
 

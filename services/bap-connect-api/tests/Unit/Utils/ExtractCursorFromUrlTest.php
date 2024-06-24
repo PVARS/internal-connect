@@ -3,7 +3,7 @@
 namespace tests\Unit\Utils;
 
 use App\Utils\Util;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ExtractCursorFromUrlTest extends TestCase
 {
@@ -45,8 +45,25 @@ class ExtractCursorFromUrlTest extends TestCase
 
     public function test_extract_cursor_from_url_with_invalid_url(): void
     {
-        $actual = Util::extractCursorFromUrl('http://example');
+        $invalidUrls = [
+            'http://',
+            'http://example',
+            '://example.com',
+            'http:/example.com',
+            'http//example.com',
+            'http://example..com',
+            'http://example .com',
+            'http://-example.com',
+            'http://example,com',
+            'http://example@com',
+            'http://example_com',
+            'http://.example.com',
+            'http://example..com',
+        ];
 
-        $this->assertNull($actual);
+        foreach ($invalidUrls as $url) {
+            $actual = Util::extractCursorFromUrl($url);
+            $this->assertNull($actual);
+        }
     }
 }

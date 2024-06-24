@@ -35,4 +35,7 @@ class Constants
 
     // Format date
     public const DATE_FORMAT_ISO = 'Y-m-d';
+
+    // Util class
+    public const string REGEX_VALID_TLD = '/\.[a-z]{2,}$/i';
 }
