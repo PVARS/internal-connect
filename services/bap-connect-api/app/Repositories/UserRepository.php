@@ -32,14 +32,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     #[Override]
     public function findUsers(array $filters = []): Builder
     {
-        $builder = $this->model;
+        $builder = $this->model->select('*');
         if ($filters) {
             if (!empty($filters['first_name'])) {
-                $builder->where('first_name', 'like', '%'.$filters['first_name'].'%');
+                $builder->where('first_name', 'like', $filters['first_name'].'%');
             }
 
             if (!empty($filters['last_name'])) {
-                $builder->where('last_name', 'like', '%'.$filters['last_name'].'%');
+                $builder->where('last_name', 'like', $filters['last_name'].'%');
             }
 
             if (!empty($filters['birthday_from'])) {
@@ -48,9 +48,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 $builder->where('birthday_day', '>=', Carbon::parse($filters['birthday_from'])->day);
             }
             if (!empty($filters['birthday_to'])) {
-                $builder->where('birthday_year', '<=', Carbon::parse($filters['birthday_from'])->year);
-                $builder->where('birthday_month', '<=', Carbon::parse($filters['birthday_from'])->month);
-                $builder->where('birthday_day', '<=', Carbon::parse($filters['birthday_from'])->day);
+                $builder->where('birthday_year', '<=', Carbon::parse($filters['birthday_to'])->year);
+                $builder->where('birthday_month', '<=', Carbon::parse($filters['birthday_to'])->month);
+                $builder->where('birthday_day', '<=', Carbon::parse($filters['birthday_to'])->day);
             }
 
             if (!empty($filters['gender'])) {
@@ -58,11 +58,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             }
 
             if (!empty($filters['username'])) {
-                $builder->where('username', 'like', '%'.$filters['username'].'%');
+                $builder->where('username', 'like', $filters['username'].'%');
             }
 
             if (!empty($filters['email'])) {
-                $builder->where('email', 'like', '%'.$filters['email'].'%');
+                $builder->where('email', 'like', $filters['email'].'%');
             }
         }
 
