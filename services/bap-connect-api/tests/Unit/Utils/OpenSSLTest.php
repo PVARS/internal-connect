@@ -3,14 +3,14 @@
 namespace tests\Unit\Utils;
 
 use App\Utils\Util;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class OpenSSLTest extends TestCase
 {
     protected function setUp(): void
     {
-        putenv('ENCRYPT_SECRET_KEY=my_secret_key');
-        putenv('SECRET_IV=my_secret_iv');
+        $_ENV['ENCRYPT_SECRET_KEY'] = 'my_secret_key';
+        $_ENV['SECRET_IV'] = 'my_secret_iv';
     }
 
     public function test_openssl_encrypt_not_empty_payload(): void
@@ -51,8 +51,8 @@ class OpenSSLTest extends TestCase
 
     public function test_openssl_encrypt_no_env_environments(): void
     {
-        putenv('ENCRYPT_SECRET_KEY');
-        putenv('SECRET_IV');
+        $_ENV['ENCRYPT_SECRET_KEY'] = '';
+        $_ENV['SECRET_IV'] = '';
 
         $payload = 'TestPayload';
         $encrypted = Util::opensslEncrypt($payload);
@@ -101,8 +101,8 @@ class OpenSSLTest extends TestCase
         $payload = 'TestPayload';
         $encrypted = Util::opensslEncrypt($payload);
 
-        putenv('ENCRYPT_SECRET_KEY');
-        putenv('SECRET_IV');
+        $_ENV['ENCRYPT_SECRET_KEY'] = '';
+        $_ENV['SECRET_IV'] = '';
 
         $actual = Util::opensslDecrypt($encrypted);
 
