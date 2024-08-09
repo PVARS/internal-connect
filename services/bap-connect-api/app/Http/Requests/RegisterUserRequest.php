@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Gender;
+use App\Rules\EmailRule;
 use App\Utils\Constants;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,7 +28,7 @@ class RegisterUserRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:'.Constants::FIRST_NAME_MAX_LENGTH],
             'last_name' => ['required', 'string', 'max:'.Constants::LAST_NAME_MAX_LENGTH],
-            'email' => ['required', 'email', 'max:'.Constants::EMAIL_MAX_LENGTH, 'unique:users'],
+            'email' => ['required', new EmailRule, 'max:'.Constants::EMAIL_MAX_LENGTH, 'unique:users'],
             'gender' => ['required', 'in:'.Gender::MALE->value.','.Gender::FEMALE->value.','.Gender::OTHER->value],
             'username' => ['required', 'max:'.Constants::USERNAME_MAX_LENGTH, 'unique:users'],
             'birthday' => ['nullable', 'date', 'date_format:'.Constants::DATE_FORMAT_ISO, 'before_or_equal:today'],
