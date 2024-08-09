@@ -25,7 +25,7 @@ Route::namespace('V1')->group(function () {
         Route::group(['prefix' => 'users'], function () {
             Route::post('verify', [UserController::class, 'verify']);
             Route::post('register', [UserController::class, 'register'])->name('users.register');
-            // Route::get('', [UserController::class, 'index']);
+             Route::get('', [UserController::class, 'index']);
             // Route::get('/{id}', [UserController::class, 'findById']);
             Route::middleware('auth:api')->group(function () {
                 Route::middleware('VerifiedAndEnabled')->group(function () {

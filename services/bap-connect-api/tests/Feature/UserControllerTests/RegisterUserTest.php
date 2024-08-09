@@ -376,29 +376,29 @@ class RegisterUserTest extends TestCase
         }
     }
 
-    //    public function test_register_user_with_email_max_length()
-    //    {
-    //        $input = [
-    //            'id' => fake()->uuid(),
-    //            'username' => fake()->username(),
-    //            'first_name' => fake()->firstName(),
-    //            'last_name' => fake()->lastName(),
-    //            'email' => str_repeat('a', Constants::EMAIL_MAX_LENGTH) . '@gmail.com',
-    //            'gender' => Gender::MALE->value,
-    //            'created_by' => User::SYSTEM_USER_ID,
-    //            'updated_by' => User::SYSTEM_USER_ID,
-    //            'creator_name' => User::SYSTEM_USER_NAME,
-    //            'updater_name' => User::SYSTEM_USER_NAME,
-    //        ];
-    //
-    //        $response = $this->post($this->api, $input, $this->headers);
-    //
-    //        $response->assertStatus(HttpCode::HTTP_UNPROCESSABLE_ENTITY);
-    //        $response->assertJson([
-    //            'DATA' => [],
-    //            'MESSAGE' => 'The email field must not be greater than '.Constants::EMAIL_MAX_LENGTH.' characters.'
-    //        ]);
-    //    }
+    public function test_register_user_email_already_exists()
+    {
+        $input = [
+            'id' => fake()->uuid(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'email' => fake()->email(),
+            'gender' => Gender::MALE->value,
+            'created_by' => User::SYSTEM_USER_ID,
+            'updated_by' => User::SYSTEM_USER_ID,
+            'creator_name' => User::SYSTEM_USER_NAME,
+            'updater_name' => User::SYSTEM_USER_NAME,
+        ];
+        User::factory()->create(array_merge($input, ['username' => fake()->username()]));
+
+        $response = $this->post($this->api, array_merge($input, ['username' => fake()->username()]), $this->headers);
+
+        $response->assertStatus(HttpCode::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            'DATA' => [],
+            'MESSAGE' => 'The email has already been taken.',
+        ]);
+    }
 
     public function test_register_user_with_failed_to_create_token(): void
     {
