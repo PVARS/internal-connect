@@ -21,6 +21,7 @@ use App\UseCase\UpdateAvatarUseCase;
 use App\UseCase\UpdateProfileUseCase;
 use App\UseCase\VerifyUserUseCase;
 use App\Utils\Constants;
+use App\Utils\Util;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
@@ -86,14 +87,19 @@ class UserController extends Controller
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $birthday = $request['birthday'];
+        $userId = v7();
+        $verifyUserToken = Util::opensslEncrypt($userId);
+        if ($verifyUserToken === null) {
+            return $this->error('Failed to create verify user token');
+        }
         $payload = [
-            'id' => v7(),
+            'id' => $userId,
             'first_name' => $request['first_name'],
             'last_name' => $request['last_name'],
             'email' => $request['email'],
             'gender' => $request['gender'],
             'username' => $request['username'],
-            'verify_user_token' => null,
+            'verify_user_token' => $verifyUserToken,
             'user_verify_token_expiration' => Carbon::now()->addDay(),
             'birthday_day' => $birthday ? Carbon::parse($birthday)->day : null,
             'birthday_month' => $birthday ? Carbon::parse($birthday)->month : null,
