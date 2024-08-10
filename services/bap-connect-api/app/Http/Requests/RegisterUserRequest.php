@@ -26,17 +26,17 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:'.Constants::FIRST_NAME_MAX_LENGTH],
-            'last_name' => ['required', 'string', 'max:'.Constants::LAST_NAME_MAX_LENGTH],
-            'email' => ['required', new EmailRule, 'unique:users'],
-            'gender' => ['required', 'in:'.Gender::MALE->value.','.Gender::FEMALE->value.','.Gender::OTHER->value],
-            'username' => ['required', 'max:'.Constants::USERNAME_MAX_LENGTH, 'unique:users'],
-            'birthday' => ['nullable', 'date', 'date_format:'.Constants::DATE_FORMAT_ISO, 'before_or_equal:today'],
-            'phone' => ['nullable', 'unique:users', 'max:'.Constants::PHONE_MAX_LENGTH],
-            'province' => ['nullable', 'max:'.Constants::PROVINCE_MAX_LENGTH],
-            'district' => ['nullable', 'max:'.Constants::DISTRICT_MAX_LENGTH],
-            'ward' => ['nullable', 'max:'.Constants::WARD_MAX_LENGTH],
-            'address' => ['nullable', 'max:'.Constants::ADDRESS_MAX_LENGTH],
+            'first_name' => ['bail', 'required', 'string', 'max:'.Constants::FIRST_NAME_MAX_LENGTH],
+            'last_name' => ['bail', 'required', 'string', 'max:'.Constants::LAST_NAME_MAX_LENGTH],
+            'email' => ['bail', 'required', new EmailRule, 'unique:users'],
+            'gender' => ['bail', 'required', 'in:'.Gender::MALE->value.','.Gender::FEMALE->value.','.Gender::OTHER->value],
+            'username' => ['bail', 'required', 'max:'.Constants::USERNAME_MAX_LENGTH, 'unique:users'],
+            'birthday' => ['bail', 'nullable', 'date', 'date_format:'.Constants::DATE_FORMAT_ISO, 'before_or_equal:today'],
+            'phone' => ['bail', 'nullable', 'unique:users', 'max:'.Constants::PHONE_MAX_LENGTH],
+            'province' => ['bail', 'nullable', 'max:'.Constants::PROVINCE_MAX_LENGTH],
+            'district' => ['bail', 'nullable', 'max:'.Constants::DISTRICT_MAX_LENGTH],
+            'ward' => ['bail', 'nullable', 'max:'.Constants::WARD_MAX_LENGTH],
+            'address' => ['bail', 'nullable', 'max:'.Constants::ADDRESS_MAX_LENGTH],
         ];
     }
 }
