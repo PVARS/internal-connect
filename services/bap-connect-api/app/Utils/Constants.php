@@ -31,7 +31,7 @@ class Constants
 
     public const VERIFY_USER_TOKEN_MAX_LENGTH = 255;
 
-    public const SIZE_AVATAR_PROFILE = 10240;
+    public const SIZE_AVATAR_PROFILE = 500; // 500 KB
 
     // Format date
     public const DATE_FORMAT_ISO = 'Y-m-d';
