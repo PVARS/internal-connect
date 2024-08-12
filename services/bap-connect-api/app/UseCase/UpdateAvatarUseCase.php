@@ -29,27 +29,36 @@ class UpdateAvatarUseCase
      *
      * @throws AppException Failed to upload avatar
      *
-     * @return void
+     * @return string URL avatar
      */
-    public function run(array $payload): void
+    public function run(array $payload): ?string
     {
         $path = Storage::disk('user-avatars')->put($payload['user_id'], $payload['avatar']);
-        if (!$path) {
-            throw new AppException('Failed to upload avatar');
-        }
+        throw_if(!$path, new AppException('Failed to upload avatar'));
 
         try {
             DB::beginTransaction();
-            $this->userRepository->update($payload['user_id'], [
+            $isUpdated = $this->userRepository->update($payload['user_id'], [
                 'avatar' => $path,
                 'updated_by' => $payload['user_id'],
                 'updater_name' => $payload['username'],
             ]);
+            throw_if(!$isUpdated, new AppException('Failed to update avatar'));
+
             DB::commit();
-        } catch (Exception $e) {
+
+            $urlAvatar = Storage::disk('user-avatars')->url($path);
+            throw_if($urlAvatar, new AppException('Failed to get url avatar'));
+
+            return $urlAvatar;
+        } catch (Exception | AppException $e) {
             DB::rollBack();
 
             Storage::disk('user-avatars')->delete($path);
+
+            if ($e instanceof AppException) {
+                throw new AppException($e->getMessage(), $e);
+            }
 
             throw new AppException('Failed to upload avatar', $e);
         }

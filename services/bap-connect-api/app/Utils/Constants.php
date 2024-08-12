@@ -38,4 +38,7 @@ class Constants
 
     // Util class
     public const string REGEX_VALID_TLD = '/\.[a-z]{2,}$/i';
+
+    // Disk S3
+    public const string USER_AVATARS = 'user-avatars';
 }
