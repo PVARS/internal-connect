@@ -1,5 +1,7 @@
 <?php
 
+use App\Utils\Constants;
+
 return [
 
     /*
@@ -44,7 +46,7 @@ return [
             'throw' => false,
         ],
 
-        'user-avatars' => [
+        Constants::USER_AVATARS => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),

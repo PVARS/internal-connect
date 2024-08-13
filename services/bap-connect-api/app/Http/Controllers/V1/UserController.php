@@ -10,6 +10,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\VerifyUserRequest;
+use App\Http\Resources\AvatarResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersWithPaginationResource;
 use App\Models\User;
@@ -258,8 +259,8 @@ class UserController extends Controller
             'user_id' => auth()->id(),
             'username' => auth()->user()->username,
         ];
-        $this->updateAvatarUseCase->run($payload);
+        $avatar = $this->updateAvatarUseCase->run($payload);
 
-        return $this->ok();
+        return $this->ok(new AvatarResource($avatar));
     }
 }
