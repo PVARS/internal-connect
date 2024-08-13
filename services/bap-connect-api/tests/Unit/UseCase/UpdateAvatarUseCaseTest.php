@@ -3,6 +3,7 @@
 namespace Tests\Unit\UseCase;
 
 use App\Exceptions\AppException;
+use App\Exceptions\CloudStorageException;
 use App\Repositories\UserRepositoryInterface;
 use App\UseCase\UpdateAvatarUseCase;
 use App\Utils\Constants;
@@ -51,7 +52,7 @@ class UpdateAvatarUseCaseTest extends TestCase
             ->with($input['user_id'], $input['avatar'])
             ->andReturnFalse();
 
-        $this->expectException(AppException::class);
+        $this->expectException(CloudStorageException::class);
         $this->expectExceptionMessage('Failed to upload avatar to cloud');
         $this->expectExceptionCode(HttpCode::HTTP_INTERNAL_SERVER_ERROR);
 
