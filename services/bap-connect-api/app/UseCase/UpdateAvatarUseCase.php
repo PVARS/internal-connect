@@ -3,6 +3,7 @@
 namespace App\UseCase;
 
 use App\Exceptions\AppException;
+use App\Exceptions\CloudStorageException;
 use App\Repositories\UserRepositoryInterface;
 use App\Utils\Constants;
 use Exception;
@@ -29,7 +30,7 @@ class UpdateAvatarUseCase
      *
      * @param  array  $payload
      *
-     * @throws AppException Failed to upload avatar to cloud
+     * @throws CloudStorageException Failed to upload avatar to cloud
      * @throws AppException Failed to update avatar
      * @throws AppException Upload failed
      *
@@ -58,7 +59,7 @@ class UpdateAvatarUseCase
      * @param  string  $path  Path
      * @param  UploadedFile  $file  File
      *
-     * @throws AppException Failed to upload avatar to cloud
+     * @throws CloudStorageException Failed to upload avatar to cloud
      *
      * @return string Path
      */
@@ -66,7 +67,7 @@ class UpdateAvatarUseCase
     {
         $path = Storage::disk(Constants::USER_AVATARS)->put($path, $file);
         if (!$path) {
-            throw new AppException('Failed to upload avatar to cloud');
+            throw new CloudStorageException('Failed to upload avatar to cloud');
         }
 
         return $path;
