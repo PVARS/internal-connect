@@ -19,9 +19,7 @@ class EnsureEmailIsVerifiedAndEnabled
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user()
-            || ($request->user() instanceof MustVerifyEmail && !$request->user()->hasVerifiedEmail())
-            || !$request->user()->status) {
+        if ($request->user() && (($request->user() instanceof MustVerifyEmail && !$request->user()->hasVerifiedEmail()) || !$request->user()->status)) {
             JWTAuth::invalidate(JWTAuth::getToken());
             throw new AppException('Please login again.', null, Response::HTTP_UNAUTHORIZED);
         }

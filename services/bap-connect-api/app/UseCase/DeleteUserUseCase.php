@@ -4,6 +4,7 @@ namespace App\UseCase;
 
 use App\Enums\UserStatus;
 use App\Exceptions\AppException;
+use App\Exceptions\BusinessException;
 use App\Exceptions\UserNotFoundException;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
@@ -32,7 +33,8 @@ class DeleteUserUseCase
      * @param  string  $id  User ID
      * @param  string  $username  User name
      *
-     * @throws AppException Failed to delete
+     * @throws BusinessException Delete user failed
+     * @throws AppException Server error
      * @throws UserNotFoundException User not found
      *
      * @return bool bool True if delete was successful, False otherwise.
@@ -40,17 +42,17 @@ class DeleteUserUseCase
     public function run(string $id, string $username): bool
     {
         try {
-            $user = $this->userRepository->findById($id);
-
             DB::beginTransaction();
-            $isUpdated = $user->update([
+            $isUpdated = $this->userRepository->update($id, [
                 'status' => UserStatus::INACTIVE,
                 'deleted_at' => Carbon::now(),
                 'updater_name' => $username,
                 'updated_by' => $id,
             ]);
 
-            throw_if(!$isUpdated, AppException::class);
+            if (!$isUpdated) {
+                throw new BusinessException('Delete user failed');
+            }
 
             DB::commit();
 
@@ -59,9 +61,11 @@ class DeleteUserUseCase
             return true;
         } catch (ModelNotFoundException $e) {
             throw new UserNotFoundException('User not found', $e);
+        } catch (BusinessException $e) {
+            throw $e;
         } catch (Exception $e) {
             DB::rollBack();
-            throw new AppException('Failed to delete', $e);
+            throw new AppException('Server error', $e);
         }
     }
 }
