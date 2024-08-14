@@ -2,7 +2,7 @@
 
 namespace App\UseCase;
 
-use App\Exceptions\AppException;
+use App\Exceptions\BusinessException;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpFoundation\Response as HttpCode;
@@ -11,6 +11,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginUseCase
 {
+    public const string MESSAGE_FAILED = 'Username and password is incorrect';
+
     private UserRepositoryInterface $userRepository;
 
     /**
@@ -28,7 +30,7 @@ class LoginUseCase
      *
      * @param  array  $payload  Email and password
      *
-     * @throws AppException Username and password is incorrect | Failed to generate token
+     * @throws BusinessException Username and password is incorrect
      *
      * @return array User logged
      */
@@ -37,17 +39,17 @@ class LoginUseCase
         try {
             $accessToken = JWTAuth::attempt($payload);
         } catch (JWTException $e) {
-            throw new AppException('Failed to generate token', $e, $e->getCode());
+            throw new BusinessException(self::MESSAGE_FAILED, $e, $e->getCode());
         }
 
         if (!$accessToken) {
-            throw new AppException('Username and password is incorrect', null,
+            throw new BusinessException(self::MESSAGE_FAILED, null,
                 HttpCode::HTTP_UNAUTHORIZED);
         }
 
         $user = $this->userRepository->findById(auth()->id());
-        if (!$user['status']) {
-            throw new AppException('Username and password is incorrect', null,
+        if (!$user->status) {
+            throw new BusinessException(self::MESSAGE_FAILED, null,
                 HttpCode::HTTP_UNAUTHORIZED);
         }
 

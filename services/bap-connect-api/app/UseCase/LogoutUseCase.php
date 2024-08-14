@@ -2,7 +2,7 @@
 
 namespace App\UseCase;
 
-use App\Exceptions\AppException;
+use App\Exceptions\BusinessException;
 use Symfony\Component\HttpFoundation\Response as HttpCode;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -12,7 +12,7 @@ class LogoutUseCase
     /**
      * Logout.
      *
-     * @throws AppException Failed to logout
+     * @throws BusinessException Failed to logout
      *
      * @return void
      */
@@ -21,7 +21,7 @@ class LogoutUseCase
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
         } catch (JWTException $e) {
-            throw new AppException('Failed to logout, please try again.', $e, HttpCode::HTTP_UNAUTHORIZED);
+            throw new BusinessException('Failed to logout, please try again.', $e, HttpCode::HTTP_UNAUTHORIZED);
         }
     }
 }

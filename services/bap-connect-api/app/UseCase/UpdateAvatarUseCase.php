@@ -3,6 +3,7 @@
 namespace App\UseCase;
 
 use App\Exceptions\AppException;
+use App\Exceptions\BusinessException;
 use App\Exceptions\CloudStorageException;
 use App\Repositories\UserRepositoryInterface;
 use App\Utils\Constants;
@@ -31,7 +32,7 @@ class UpdateAvatarUseCase
      * @param  array  $payload
      *
      * @throws CloudStorageException Failed to upload avatar to cloud
-     * @throws AppException Failed to update avatar
+     * @throws BusinessException Failed to update avatar
      * @throws AppException Upload failed
      *
      * @return string URL avatar
@@ -47,7 +48,9 @@ class UpdateAvatarUseCase
             DB::commit();
 
             return Storage::disk(Constants::USER_AVATARS)->url($path);
-        } catch (Exception|AppException $e) {
+        } catch (BusinessException $e) {
+            throw $e;
+        } catch (Exception $e) {
             DB::rollBack();
             $this->handleFailedUpload($path, $e);
         }
@@ -79,7 +82,7 @@ class UpdateAvatarUseCase
      * @param  array  $payload  Payload
      * @param  string  $path  Path avatar
      *
-     * @throws AppException Failed to update avatar
+     * @throws BusinessException Failed to update avatar
      *
      * @return void
      */
@@ -91,7 +94,7 @@ class UpdateAvatarUseCase
             'updater_name' => $payload['username'],
         ]);
         if (!$isUpdated) {
-            throw new AppException('Failed to update avatar');
+            throw new BusinessException('Failed to update avatar');
         }
     }
 
@@ -101,14 +104,13 @@ class UpdateAvatarUseCase
      * @param  string  $path  Path
      * @param  Exception  $e  Exception
      *
-     * @throws AppException When upload failed
+     * @throws AppException Upload failed
      *
      * @return void
      */
     private function handleFailedUpload(string $path, Exception $e): void
     {
         Storage::disk(Constants::USER_AVATARS)->delete($path);
-        $message = $e instanceof AppException ? $e->getMessage() : 'Upload failed';
-        throw new AppException($message, $e);
+        throw new AppException('Upload failed', $e);
     }
 }
